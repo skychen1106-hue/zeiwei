@@ -9,41 +9,51 @@
         .header { background-color: #8b0000; color: #ffd700; padding: 15px 0; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         h1 { margin: 0; font-size: 20px; letter-spacing: 2px; }
 
-        .container { flex-grow: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+        .container { flex-grow: 1; display: flex; flex-direction: column; align-items: center; padding: 15px; box-sizing: border-box; overflow-y: auto; }
 
         /* 階段 1: 說明頁面 */
         #step-instructions { width: 100%; max-width: 500px; display: block; }
         .info-box { background: white; border-radius: 8px; padding: 15px; margin-bottom: 20px; border-left: 5px solid #8b0000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .info-box h2 { font-size: 17px; color: #8b0000; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        .info-box ul, .info-box ol { padding-left: 20px; font-size: 15px; line-height: 1.8; }
+        .info-box ul, .info-box ol { padding-left: 20px; font-size: 14px; line-height: 1.8; }
         .confirm-btn { width: 100%; padding: 15px; background-color: #8b0000; color: #ffd700; border: none; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; }
 
         /* 階段 2: 抽籤頁面 */
-        #step-drawing { width: 100%; max-width: 500px; display: none; text-align: center; }
+        #step-drawing { width: 100%; max-width: 600px; display: none; text-align: center; }
         
         /* 三個獨立的結果方塊 */
-        .results-container { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+        .results-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; width: 100%; }
         .result-box { 
-            background: white; border: 1.5px solid #8b0000; border-radius: 12px; padding: 15px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60px;
+            background: white; border: 1.5px solid #8b0000; border-radius: 12px; padding: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80px;
         }
         .res-label { font-size: 12px; color: #8b0000; font-weight: bold; margin-bottom: 5px; background: #fff5f5; padding: 2px 8px; border-radius: 4px; }
-        .res-text { font-size: 22px; font-weight: bold; color: #333; }
-        .res-text.active { color: #d42424; animation: highlight 0.5s ease; }
+        .res-text { font-size: 20px; font-weight: bold; color: #333; line-height: 1.4; }
+        .pos-neg { font-size: 16px; color: #d42424; margin-top: 4px; }
 
-        @keyframes highlight {
-            0% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        /* 按鈕群組：橫向排列 */
+        .btn-group { 
+            display: flex; 
+            flex-direction: row; /* 由左向右 */
+            justify-content: space-between; 
+            gap: 8px; 
+            width: 100%; 
         }
-
-        .btn-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .draw-btn { 
-            padding: 14px; border: 2px solid #8b0000; background: white; color: #8b0000; 
-            border-radius: 50px; font-size: 16px; font-weight: bold; cursor: pointer;
+            flex: 1; /* 讓三個按鈕平分寬度 */
+            padding: 12px 5px; 
+            border: 2px solid #8b0000; 
+            background: white; 
+            color: #8b0000; 
+            border-radius: 10px; 
+            font-size: 14px; 
+            font-weight: bold; 
+            cursor: pointer;
+            white-space: nowrap; /* 避免文字斷行 */
         }
         .draw-btn:active { background: #8b0000; color: #ffd700; }
         
-        #loading { visibility: hidden; color: #8b0000; font-weight: bold; margin: 10px 0; font-size: 14px; }
+        #loading { visibility: hidden; color: #8b0000; font-weight: bold; margin: 15px 0; font-size: 14px; }
         .reset-link { font-size: 12px; color: #999; margin-top: 25px; text-decoration: underline; cursor: pointer; }
     </style>
 </head>
@@ -76,23 +86,26 @@
                 <div class="result-box">
                     <span class="res-label">主星結果</span>
                     <span class="res-text" id="out-main">尚未抽籤</span>
+                    <span class="pos-neg" id="pos-main"></span>
                 </div>
                 <div class="result-box">
                     <span class="res-label">輔星結果</span>
                     <span class="res-text" id="out-assist">尚未抽籤</span>
+                    <span class="pos-neg" id="pos-assist"></span>
                 </div>
                 <div class="result-box">
                     <span class="res-label">長生結果</span>
                     <span class="res-text" id="out-life">尚未抽籤</span>
+                    <span class="pos-neg" id="pos-life"></span>
                 </div>
             </div>
 
             <div id="loading">神明指引中...</div>
 
             <div class="btn-group">
-                <button class="draw-btn" onclick="draw('main')">【抽主星牌】</button>
-                <button class="draw-btn" onclick="draw('assist')">【抽輔星牌】</button>
-                <button class="draw-btn" onclick="draw('life')">【抽長生牌】</button>
+                <button class="draw-btn" onclick="draw('main')">抽主星</button>
+                <button class="draw-btn" onclick="draw('assist')">抽輔星</button>
+                <button class="draw-btn" onclick="draw('life')">抽長生</button>
             </div>
             
             <p class="reset-link" onclick="location.reload()">重新開始 (清除結果)</p>
@@ -113,21 +126,25 @@
 
         function draw(type) {
             const loading = document.getElementById('loading');
-            const target = document.getElementById('out-' + type);
+            const targetText = document.getElementById('out-' + type);
+            const targetPos = document.getElementById('pos-' + type);
             
             loading.style.visibility = 'visible';
-            target.style.opacity = '0.3';
+            targetText.style.opacity = '0.3';
+            targetPos.style.opacity = '0.3';
 
             setTimeout(() => {
                 const deck = decks[type];
                 const result = deck[Math.floor(Math.random() * deck.length)];
                 
-                target.innerText = result;
-                target.style.opacity = '1';
-                target.classList.add('active');
+                // 隨機決定正反位
+                const orientation = Math.random() > 0.5 ? "【正位】" : "【反位】";
                 
-                // 300ms 後移除動畫類別，方便下次觸發
-                setTimeout(() => target.classList.remove('active'), 500);
+                targetText.innerText = result;
+                targetPos.innerText = orientation;
+                
+                targetText.style.opacity = '1';
+                targetPos.style.opacity = '1';
                 
                 loading.style.visibility = 'hidden';
             }, 400);
