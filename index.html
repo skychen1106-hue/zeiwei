@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>天空紫微抽籤系統</title>
     <style>
-        /* 全域樣式：確保手機填滿且背景柔和 */
         html, body { height: 100%; margin: 0; padding: 0; background-color: #fdf5e6; font-family: "Microsoft JhengHei", sans-serif; color: #333; display: flex; flex-direction: column; }
         .header { background-color: #8b0000; color: #ffd700; padding: 15px 0; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         h1 { margin: 0; font-size: 20px; letter-spacing: 2px; }
@@ -19,22 +18,33 @@
         .info-box ul, .info-box ol { padding-left: 20px; font-size: 15px; line-height: 1.8; }
         .confirm-btn { width: 100%; padding: 15px; background-color: #8b0000; color: #ffd700; border: none; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; }
 
-        /* 階段 2: 抽籤頁面 (預設隱藏) */
+        /* 階段 2: 抽籤頁面 */
         #step-drawing { width: 100%; max-width: 500px; display: none; text-align: center; }
-        #result-area { 
-            background: white; border: 2px solid #8b0000; border-radius: 15px; padding: 25px 10px; margin-bottom: 25px; min-height: 100px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        
+        /* 三個獨立的結果方塊 */
+        .results-container { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+        .result-box { 
+            background: white; border: 1.5px solid #8b0000; border-radius: 12px; padding: 15px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60px;
         }
-        .res-hint { font-size: 13px; color: #999; margin-bottom: 5px; }
-        .res-val { font-size: 26px; font-weight: bold; color: #d42424; }
+        .res-label { font-size: 12px; color: #8b0000; font-weight: bold; margin-bottom: 5px; background: #fff5f5; padding: 2px 8px; border-radius: 4px; }
+        .res-text { font-size: 22px; font-weight: bold; color: #333; }
+        .res-text.active { color: #d42424; animation: highlight 0.5s ease; }
 
-        .btn-group { display: flex; flex-direction: column; gap: 15px; }
+        @keyframes highlight {
+            0% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .draw-btn { 
-            padding: 15px; border: 2px solid #8b0000; background: white; color: #8b0000; 
+            padding: 14px; border: 2px solid #8b0000; background: white; color: #8b0000; 
             border-radius: 50px; font-size: 16px; font-weight: bold; cursor: pointer;
         }
         .draw-btn:active { background: #8b0000; color: #ffd700; }
-        #loading { display: none; color: #8b0000; font-weight: bold; margin-bottom: 10px; }
+        
+        #loading { visibility: hidden; color: #8b0000; font-weight: bold; margin: 10px 0; font-size: 14px; }
+        .reset-link { font-size: 12px; color: #999; margin-top: 25px; text-decoration: underline; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -62,52 +72,65 @@
         </div>
 
         <div id="step-drawing">
-            <div id="result-area">
-                <div class="res-hint">抽籤結果</div>
-                <div class="res-val" id="output">請點選下方籤筒</div>
+            <div class="results-container">
+                <div class="result-box">
+                    <span class="res-label">主星結果</span>
+                    <span class="res-text" id="out-main">尚未抽籤</span>
+                </div>
+                <div class="result-box">
+                    <span class="res-label">輔星結果</span>
+                    <span class="res-text" id="out-assist">尚未抽籤</span>
+                </div>
+                <div class="result-box">
+                    <span class="res-label">長生結果</span>
+                    <span class="res-text" id="out-life">尚未抽籤</span>
+                </div>
             </div>
 
-            <p id="loading">正在請示神明...</p>
+            <div id="loading">神明指引中...</div>
 
             <div class="btn-group">
-                <button class="draw-btn" onclick="draw('main')">【主星牌組】點此抽籤</button>
-                <button class="draw-btn" onclick="draw('assist')">【輔星牌組】點此抽籤</button>
-                <button class="draw-btn" onclick="draw('life')">【十二長生牌】點此抽籤</button>
+                <button class="draw-btn" onclick="draw('main')">【抽主星牌】</button>
+                <button class="draw-btn" onclick="draw('assist')">【抽輔星牌】</button>
+                <button class="draw-btn" onclick="draw('life')">【抽長生牌】</button>
             </div>
             
-            <p style="font-size: 12px; color: #999; margin-top: 30px; text-decoration: underline;" onclick="location.reload()">重新閱讀禁忌</p>
+            <p class="reset-link" onclick="location.reload()">重新開始 (清除結果)</p>
         </div>
     </div>
 
     <script>
-        // 資料清單
         const decks = {
-            main: ["紫微星", "紫微天府雙星", "紫微天相雙星", "紫微破軍雙星", "紫微七殺雙星", "紫微貪狼雙星", "天府星", "天相星", "天梁星", "七殺星", "破軍星", "貪狼星", "巨門星", "巨門太陽雙星", "太陽星", "太陽天梁雙星", "太陽太陰雙星", "太陰星", "太陰天同雙星", "天同星", "天同巨門雙星", "天同天梁雙星", "天機星", "天機營門雙星", "天機天梁雙星", "天機太陰雙星", "武曲天府雙星", "武曲天相雙星", "武曲破軍雙星", "武曲七殺雙星", "武曲貪狼雙星", "廉貞星", "廉貞天府雙星", "廉貞天相雙星", "廉貞破軍雙星", "廉貞七殺雙星", "廉貞貪狼雙星", "空宮牌"],
+            main: ["紫微星", "紫微天府雙星", "紫微天相雙星", "紫微破軍雙星", "紫微七殺雙星", "紫微貪狼雙星", "天府星", "天相星", "天梁星", "七殺星", "破軍星", "貪狼星", "巨門星", "巨門太陽雙星", "太陽星", "太陽天梁雙星", "太陽太陰雙星", "太陰星", "太陰天同雙星", "天同星", "天同巨門雙星", "天同天梁雙星", "天機星", "天機巨門雙星", "天機天梁雙星", "天機太陰雙星", "武曲天府雙星", "武曲天相雙星", "武曲破軍雙星", "武曲七殺雙星", "武曲貪狼雙星", "廉貞星", "廉貞天府雙星", "廉貞天相雙星", "廉貞破軍雙星", "廉貞七殺雙星", "廉貞貪狼雙星", "空宮牌"],
             assist: ["紅鸞", "天喜", "左輔", "右弼", "文昌", "文曲", "天魁", "天鉞", "擎羊", "陀羅", "鈴星", "火星", "地空", "地劫", "祿存", "天馬", "化忌", "化祿", "化權", "化科"],
             life: ["長生", "沐浴", "冠帶", "臨官", "帝旺", "衰", "病", "死", "墓", "絕", "胎", "養"]
         };
 
-        // 切換頁面
         function startDrawing() {
             document.getElementById('step-instructions').style.display = 'none';
             document.getElementById('step-drawing').style.display = 'block';
         }
 
-        // 隨機抽籤
         function draw(type) {
             const loading = document.getElementById('loading');
-            const output = document.getElementById('output');
+            const target = document.getElementById('out-' + type);
             
-            loading.style.display = 'block';
-            output.style.opacity = '0.3';
+            loading.style.visibility = 'visible';
+            target.style.opacity = '0.3';
 
             setTimeout(() => {
                 const deck = decks[type];
                 const result = deck[Math.floor(Math.random() * deck.length)];
-                output.innerText = result;
-                output.style.opacity = '1';
-                loading.style.display = 'none';
-            }, 500);
+                
+                target.innerText = result;
+                target.style.opacity = '1';
+                target.classList.add('active');
+                
+                // 300ms 後移除動畫類別，方便下次觸發
+                setTimeout(() => target.classList.remove('active'), 500);
+                
+                loading.style.visibility = 'hidden';
+            }, 400);
         }
     </script>
 </body>
