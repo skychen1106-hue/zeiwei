@@ -40,7 +40,16 @@
         .draw-btn:active { background: #8b0000; color: #ffd700; }
         
         #loading { visibility: hidden; color: #8b0000; font-weight: bold; margin: 15px 0; font-size: 14px; }
-        .reset-link { font-size: 12px; color: #999; margin-top: 30px; text-decoration: underline; cursor: pointer; }
+        
+        /* Threads 追蹤區 */
+        .social-area { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0d5c1; width: 100%; }
+        .threads-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            background-color: #000; color: #fff; padding: 10px 25px; border-radius: 50px;
+            text-decoration: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .threads-btn:active { transform: scale(0.98); }
+        .reset-link { font-size: 12px; color: #999; margin-top: 20px; text-decoration: underline; cursor: pointer; display: block; }
     </style>
 </head>
 <body>
@@ -97,45 +106,15 @@
                 <button class="draw-btn" onclick="draw('life')">抽長生</button>
             </div>
             
-            <p class="reset-link" onclick="location.reload()">重新開始 (回到準備頁面)</p>
+            <div class="social-area">
+                <a href="https://www.threads.com/@sky.zeiwei?xmt=AQGz4v4sc_wavYFw8Klr5JI5bl-bsy55gX6nUxuW1uYEvb8" target="_blank" class="threads-btn">
+                    追蹤我的 Threads ✨
+                </a>
+                <p class="reset-link" onclick="location.reload()">重新開始 (回到準備頁面)</p>
+            </div>
         </div>
     </div>
 
     <script>
         const decks = {
-            main: ["紫微星", "紫微天府雙星", "紫微天相雙星", "紫微破軍雙星", "紫微七殺雙星", "紫微貪狼雙星", "天府星", "天相星", "天梁星", "七殺星", "破軍星", "貪狼星", "巨門星", "巨門太陽雙星", "太陽星", "太陽天梁雙星", "太陽太陰雙星", "太陰星", "太陰天同雙星", "天同星", "天同巨門雙星", "天同天梁雙星", "天機星", "天機巨門雙星", "天機天梁雙星", "天機太陰雙星", "武曲天府雙星", "武曲天相雙星", "武曲破軍雙星", "武曲七殺雙星", "武曲貪狼雙星", "廉貞星", "廉貞天府雙星", "廉貞天相雙星", "廉貞破軍雙星", "廉貞七殺雙星", "廉貞貪狼雙星", "空宮牌"],
-            assist: ["紅鸞", "天喜", "左輔", "右弼", "文昌", "文曲", "天魁", "天鉞", "擎羊", "陀羅", "鈴星", "火星", "地空", "地劫", "祿存", "天馬", "化忌", "化祿", "化權", "化科"],
-            // 這裡已更新長生牌組內容
-            life: ["長生（1）", "沐浴（2）", "冠帶（3）", "臨官（4）", "帝旺（5）", "衰（6）", "病（7）", "死（8）", "墓（9）", "絕（10）", "胎（11）", "養（12）"]
-        };
-
-        function startDrawing() {
-            document.getElementById('step-instructions').style.display = 'none';
-            document.getElementById('step-drawing').style.display = 'block';
-        }
-
-        function draw(type) {
-            const loading = document.getElementById('loading');
-            const targetText = document.getElementById('out-' + type);
-            const targetPos = document.getElementById('pos-' + type);
-            
-            loading.style.visibility = 'visible';
-            targetText.style.opacity = '0.3';
-            targetPos.style.opacity = '0.3';
-
-            setTimeout(() => {
-                const deck = decks[type];
-                const result = deck[Math.floor(Math.random() * deck.length)];
-                const orientation = Math.random() > 0.5 ? "【正位】" : "【反位】";
-                
-                targetText.innerText = result;
-                targetPos.innerText = orientation;
-                
-                targetText.style.opacity = '1';
-                targetPos.style.opacity = '1';
-                loading.style.visibility = 'hidden';
-            }, 400);
-        }
-    </script>
-</body>
-</html>
+            main: ["紫微星", "紫微天府雙星", "紫微天相雙星", "紫微破軍雙星", "紫微七殺雙星", "紫微貪狼雙星", "天府星", "天相星", "天梁星", "七殺星", "
