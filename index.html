@@ -31,7 +31,7 @@
         .res-text { font-size: 20px; font-weight: bold; color: #333; line-height: 1.4; }
         .pos-neg { font-size: 16px; color: #d42424; margin-top: 4px; font-weight: bold; }
 
-        /* 橫向按鈕 */
+        /* 橫向抽籤按鈕 */
         .btn-group { display: flex; flex-direction: row; justify-content: space-between; gap: 8px; width: 100%; }
         .draw-btn { 
             flex: 1; padding: 12px 5px; border: 2px solid #8b0000; background: white; color: #8b0000; 
@@ -41,15 +41,19 @@
         
         #loading { visibility: hidden; color: #8b0000; font-weight: bold; margin: 15px 0; font-size: 14px; }
         
-        /* Threads 追蹤區 */
-        .social-area { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0d5c1; width: 100%; }
-        .threads-btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            background-color: #000; color: #fff; padding: 10px 25px; border-radius: 50px;
-            text-decoration: none; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        /* 社群與預約區 */
+        .social-area { margin-top: 30px; padding: 20px 0; border-top: 1px solid #e0d5c1; width: 100%; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+        .social-btn {
+            width: 80%; max-width: 250px; padding: 10px; border-radius: 50px;
+            text-decoration: none; font-size: 14px; font-weight: bold; color: #fff;
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .threads-btn:active { transform: scale(0.98); }
-        .reset-link { font-size: 12px; color: #999; margin-top: 20px; text-decoration: underline; cursor: pointer; display: block; }
+        .btn-threads { background-color: #000; }
+        .btn-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .btn-line { background-color: #06c755; }
+        .social-btn:active { transform: scale(0.98); }
+
+        .reset-link { font-size: 12px; color: #999; margin-top: 15px; text-decoration: underline; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -107,9 +111,9 @@
             </div>
             
             <div class="social-area">
-                <a href="https://www.threads.com/@sky.zeiwei?xmt=AQGz4v4sc_wavYFw8Klr5JI5bl-bsy55gX6nUxuW1uYEvb8" target="_blank" class="threads-btn">
-                    追蹤我的 Threads ✨
-                </a>
+                <a href="https://line.me/R/ti/p/@601mtsal?ts=03061840&oat_content=url" target="_blank" class="social-btn btn-line">預約個人論命 (LINE)</a>
+                <a href="https://www.instagram.com/sky.zeiwei?igsh=dGttZHg5YTRpNjRi&utm_source=qr" target="_blank" class="social-btn btn-ig">追蹤 Instagram</a>
+                <a href="https://www.threads.com/@sky.zeiwei?xmt=AQGz4v4sc_wavYFw8Klr5JI5bl-bsy55gX6nUxuW1uYEvb8" target="_blank" class="social-btn btn-threads">追蹤 Threads</a>
                 <p class="reset-link" onclick="location.reload()">重新開始 (回到準備頁面)</p>
             </div>
         </div>
